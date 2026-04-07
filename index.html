@@ -7,35 +7,26 @@
     <style>
         :root { --primary: #00695c; --secondary: #1a73e8; --bg: #f4f7f6; --pending: #d32f2f; --edit: #ff9800; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        
         .tabs { display: flex; background: var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .tab-btn { flex: 1; padding: 15px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; }
         .tab-btn.active { background: #004d40; border-bottom: 4px solid #ffeb3b; }
-
         .container { max-width: 1000px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         .page { display: none; }
         .page.active { display: block; }
-
         form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f9f9f9; padding: 25px; border-radius: 10px; border: 1px solid #eee; }
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; font-weight: bold; color: #444; }
         input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
         .submit-btn { grid-column: span 2; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .submit-btn:hover { background: #004d40; }
-        .edit-mode-btn { background: var(--edit) !important; }
-
         .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; gap: 10px; flex-wrap: wrap; }
         .print-btn { background: #333; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-
         .table-container { overflow-x: auto; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
         th { background: #f1f1f1; color: #333; }
         .pending-row { color: var(--pending); font-weight: bold; }
-        .edit-link { color: var(--edit); font-weight: bold; cursor: pointer; border: 1px solid var(--edit); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
-
         @media (max-width: 600px) { form { grid-template-columns: 1fr; } .submit-btn { grid-column: span 1; } }
-        @media print { .tabs, .controls, .submit-btn, form, .edit-link { display: none !important; } .container { box-shadow: none; border: none; width: 100%; } table { border: 1px solid #000; } th, td { border: 1px solid #000; } }
     </style>
 </head>
 <body>
@@ -47,21 +38,19 @@
 
 <div class="container">
     <div id="entryPage" class="page active">
-        <h2 style="text-align:center; color:var(--primary)" id="formHeader">DARUL ISLAM CHUZHALI - FEE ENTRY</h2>
+        <h2 style="text-align:center; color:var(--primary)">DARUL ISLAM CHUZHALI - FEE ENTRY</h2>
         <form id="feeForm">
-            <input type="hidden" name="action" id="actionField" value="add">
-            <input type="hidden" name="rowIndex" id="rowField">
-            
-            <div class="form-group"><label>വിദ്യാർത്ഥിയുടെ പേര്</label><input type="text" name="name" id="nameInp" required></div>
+            <input type="hidden" name="action" value="add">
+            <div class="form-group"><label>വിദ്യാർത്ഥിയുടെ പേര്</label><input type="text" name="name" required></div>
             <div class="form-group">
                 <label>ക്ലാസ്</label>
-                <select name="class" id="classInp" required>
+                <select name="class" required>
                     <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}</option>`);</script>
                 </select>
             </div>
             <div class="form-group">
                 <label>ഫീ ഇനം</label>
-                <select name="feeType" id="typeInp" required>
+                <select name="feeType" required>
                     <option value="Madrasa Fee">Madrasa Fee</option>
                     <option value="Bus Fee">Bus Fee</option>
                     <option value="Exam Fee">Exam Fee</option>
@@ -70,48 +59,50 @@
             </div>
             <div class="form-group">
                 <label>മാസം</label>
-                <select name="month" id="monthInp" required>
-                    <script>
-                        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-                        months.forEach(m => document.write(`<option value="${m}">${m}</option>`));
-                    </script>
+                <select name="month" required id="monthInpForm">
+                    <option value="January">January</option><option value="February">February</option>
+                    <option value="March">March</option><option value="April">April</option>
+                    <option value="May">May</option><option value="June">June</option>
+                    <option value="July">July</option><option value="August">August</option>
+                    <option value="September">September</option><option value="October">October</option>
+                    <option value="November">November</option><option value="December">December</option>
                 </select>
             </div>
-            <div class="form-group"><label>തുക (Amount)</label><input type="number" name="amount" id="amountInp" required></div>
+            <div class="form-group"><label>തുക (Amount)</label><input type="number" name="amount" required></div>
             <button type="submit" class="submit-btn" id="saveBtn">സേവ് ചെയ്യുക (SAVE)</button>
         </form>
         <p id="msg" style="text-align:center; margin-top:15px; font-weight:bold;"></p>
     </div>
 
     <div id="recordPage" class="page">
-        <h2 style="text-align:center; color:var(--primary)">ഫീസ്‌ വിവരങ്ങൾ</h2>
+        <h2 style="text-align:center; color:var(--primary)">ഫീസ്‌ റെക്കോർഡുകൾ</h2>
         <div class="controls">
             <div>
-                <label>Class: </label>
-                <select id="classFilter" onchange="applyFilters()">
-                    <option value="All">All Classes</option>
-                    <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script>
-                </select>
-                <label style="margin-left:10px;">Month: </label>
+                <label>മാസം: </label>
                 <select id="monthFilter" onchange="loadData()">
-                    <script>months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script>
+                    <option value="January">January</option><option value="February">February</option>
+                    <option value="March">March</option><option value="April">April</option>
+                    <option value="May">May</option><option value="June">June</option>
+                    <option value="July">July</option><option value="August">August</option>
+                    <option value="September">September</option><option value="October">October</option>
+                    <option value="November">November</option><option value="December">December</option>
                 </select>
             </div>
-            <button class="print-btn" onclick="window.print()">🖨️ പ്രിന്റ് റിപ്പോർട്ട്</button>
+            <button class="print-btn" onclick="window.print()">🖨️ പ്രിന്റ്</button>
         </div>
 
-        <h3 style="color: green;">✅ ഫീസ്‌ തന്നവർ (Paid List)</h3>
+        <h3 style="color: green;">✅ പണമടച്ചവർ</h3>
         <div class="table-container">
             <table>
-                <thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Type</th><th>Month</th><th>Amount</th><th>Edit</th></tr></thead>
+                <thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Type</th><th>Month</th><th>Amount</th></tr></thead>
                 <tbody id="paidBody"></tbody>
             </table>
         </div>
 
-        <h3 style="color: var(--pending); margin-top: 25px;">⚠️ ഫീസ്‌ തരാത്തവർ (Pending List)</h3>
+        <h3 style="color: var(--pending); margin-top: 25px;">⚠️ ബാക്കിയുള്ളവർ (Pending)</h3>
         <div class="table-container">
             <table>
-                <thead><tr><th>Student Name</th><th>Class</th><th>Status</th></tr></thead>
+                <thead><tr><th>Name</th><th>Class</th><th>Status</th></tr></thead>
                 <tbody id="pendingBody"></tbody>
             </table>
         </div>
@@ -119,8 +110,7 @@
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyBCaisf-denpa8PjlC5EfRlNb9rjBVnBg8gMr7i0yUA5zV1MvBM_x49fKurWW_nQ/exec';
-    let rawData = [];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwM5bmYwF4E9ngr43nrzCFv1l4OImhoFVSpb47VQEybJrfgYYh6zgu4ViXfTjAShhYn/exec';
 
     function openPage(id, b) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -132,12 +122,18 @@
 
     function loadData() {
         let m = document.getElementById('monthFilter').value;
-        document.getElementById('paidBody').innerHTML = "<tr><td colspan='7' style='text-align:center;'>Loading...</td></tr>";
+        document.getElementById('paidBody').innerHTML = "<tr><td colspan='6' style='text-align:center;'>Loading...</td></tr>";
         document.getElementById('pendingBody').innerHTML = "<tr><td colspan='3' style='text-align:center;'>Loading...</td></tr>";
 
         fetch(`${scriptURL}?month=${m}`).then(r => r.json()).then(d => {
-            rawData = d.allData || [];
-            applyFilters();
+            let pHTML = "";
+            let raw = d.allData || [];
+            raw.slice(1).forEach(r => {
+                if(r[5] === m) {
+                    pHTML += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[5]}</td><td>₹${r[4]}</td></tr>`;
+                }
+            });
+            document.getElementById('paidBody').innerHTML = pHTML || "<tr><td colspan='6' style='text-align:center;'>ഈ മാസം ആരും നൽകിയിട്ടില്ല.</td></tr>";
 
             let pendHTML = "";
             if(d.pending) {
@@ -149,48 +145,13 @@
         });
     }
 
-    function applyFilters() {
-        let cFilter = document.getElementById('classFilter').value;
-        let mFilter = document.getElementById('monthFilter').value;
-        
-        let filteredRows = rawData.filter((r, idx) => {
-            if(idx === 0) return false;
-            return (cFilter === "All" || r[2] == cFilter) && (r[5] === mFilter);
-        });
-
-        let h = "";
-        filteredRows.forEach(r => {
-            let originalIdx = rawData.findIndex(row => row === r);
-            h += `<tr>
-                <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>
-                <td>${r[5]}</td><td>₹${r[4]}</td>
-                <td><span class="edit-link" onclick="startEdit(${originalIdx}, '${r[1]}', '${r[2]}', '${r[3]}', '${r[4]}', '${r[5]}')">Edit ✏️</span></td>
-            </tr>`;
-        });
-        document.getElementById('paidBody').innerHTML = h || "<tr><td colspan='7' style='text-align:center;'>വിവരങ്ങൾ ലഭ്യമല്ല.</td></tr>";
-    }
-
-    function startEdit(idx, n, c, t, a, m) {
-        openPage('entryPage', document.getElementById('tBtn1'));
-        document.getElementById('formHeader').innerText = "തിരുത്തുക (EDIT RECORD) ✏️";
-        document.getElementById('actionField').value = "edit";
-        document.getElementById('rowField').value = idx;
-        document.getElementById('nameInp').value = n;
-        document.getElementById('classInp').value = c;
-        document.getElementById('typeInp').value = t;
-        document.getElementById('amountInp').value = a;
-        document.getElementById('monthInp').value = m;
-        document.getElementById('saveBtn').innerText = "UPDATE NOW";
-        document.getElementById('saveBtn').classList.add('edit-mode-btn');
-    }
-
     document.getElementById('feeForm').addEventListener('submit', e => {
         e.preventDefault();
         document.getElementById('saveBtn').disabled = true;
-        document.getElementById('msg').innerText = "Processing... Please wait.";
+        document.getElementById('msg').innerText = "ഷീറ്റിലേക്ക് മാറ്റുന്നു...";
         fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
             .then(() => {
-                alert("വിജയകരമായി പൂർത്തിയാക്കി!");
+                alert("വിജയകരമായി സബ്മിറ്റ് ചെയ്തു!");
                 window.location.reload();
             });
     });
