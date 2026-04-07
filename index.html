@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darul Islam Madrasa - Fee Management</title>
+    <title>Darul Islam Chuzhali - Fee Portal</title>
     <style>
         :root { --primary: #00695c; --secondary: #1a73e8; --bg: #f4f7f6; --pending: #d32f2f; --edit: #ff9800; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
         
-        /* Tab Navigation */
         .tabs { display: flex; background: var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .tab-btn { flex: 1; padding: 15px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .tab-btn { flex: 1; padding: 15px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; }
         .tab-btn.active { background: #004d40; border-bottom: 4px solid #ffeb3b; }
 
         .container { max-width: 1000px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Form Design */
         form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f9f9f9; padding: 25px; border-radius: 10px; border: 1px solid #eee; }
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; font-weight: bold; color: #444; }
@@ -26,37 +24,30 @@
         .submit-btn:hover { background: #004d40; }
         .edit-mode-btn { background: var(--edit) !important; }
 
-        /* Table & Controls */
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; flex-wrap: wrap; gap: 10px; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; gap: 10px; flex-wrap: wrap; }
         .print-btn { background: #333; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
         .table-container { overflow-x: auto; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
         th { background: #f1f1f1; color: #333; }
         .pending-row { color: var(--pending); font-weight: bold; }
-        .edit-link { color: var(--edit); cursor: pointer; font-weight: bold; border: 1px solid var(--edit); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+        .edit-link { color: var(--edit); font-weight: bold; cursor: pointer; border: 1px solid var(--edit); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
 
-        /* Print Settings */
-        @media print {
-            .tabs, .controls, .submit-btn, form, .edit-link { display: none !important; }
-            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; margin: 0; }
-            .page { display: block !important; }
-            table { border: 1px solid #000; width: 100%; }
-            th, td { border: 1px solid #000 !important; }
-        }
+        @media (max-width: 600px) { form { grid-template-columns: 1fr; } .submit-btn { grid-column: span 1; } }
+        @media print { .tabs, .controls, .submit-btn, form, .edit-link { display: none !important; } .container { box-shadow: none; border: none; width: 100%; } table { border: 1px solid #000; } th, td { border: 1px solid #000; } }
     </style>
 </head>
 <body>
 
 <div class="tabs">
-    <button class="tab-btn active" id="btn1" onclick="openPage('entryPage', this)">ഫീസ്‌ നൽകാൻ (Entry)</button>
-    <button class="tab-btn" id="btn2" onclick="openPage('recordPage', this)">ലിസ്റ്റ് നോക്കാൻ (Records)</button>
+    <button class="tab-btn active" id="tBtn1" onclick="openPage('entryPage', this)">ഫീസ്‌ നൽകാൻ (Entry)</button>
+    <button class="tab-btn" id="tBtn2" onclick="openPage('recordPage', this)">ലിസ്റ്റ് നോക്കാൻ (Records)</button>
 </div>
 
 <div class="container">
     <div id="entryPage" class="page active">
-        <h2 style="text-align:center; color:var(--primary)" id="formHeader">FEE ENTRY FORM</h2>
+        <h2 style="text-align:center; color:var(--primary)" id="formHeader">DARUL ISLAM CHUZHALI - FEE ENTRY</h2>
         <form id="feeForm">
             <input type="hidden" name="action" id="actionField" value="add">
             <input type="hidden" name="rowIndex" id="rowField">
@@ -93,21 +84,20 @@
     </div>
 
     <div id="recordPage" class="page">
-        <h2 style="text-align:center; color:var(--primary)">FEE COLLECTION & PENDING LIST</h2>
-        
+        <h2 style="text-align:center; color:var(--primary)">ഫീസ്‌ വിവരങ്ങൾ</h2>
         <div class="controls">
             <div>
-                <label>ഫിൽറ്റർ (Class): </label>
+                <label>Class: </label>
                 <select id="classFilter" onchange="applyFilters()">
                     <option value="All">All Classes</option>
                     <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script>
                 </select>
-                <label style="margin-left:10px;">മാസം: </label>
+                <label style="margin-left:10px;">Month: </label>
                 <select id="monthFilter" onchange="loadData()">
                     <script>months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script>
                 </select>
             </div>
-            <button class="print-btn" onclick="window.print()">🖨️ പ്രിന്റ് എടുക്കുക</button>
+            <button class="print-btn" onclick="window.print()">🖨️ പ്രിന്റ് റിപ്പോർട്ട്</button>
         </div>
 
         <h3 style="color: green;">✅ ഫീസ്‌ തന്നവർ (Paid List)</h3>
@@ -118,7 +108,7 @@
             </table>
         </div>
 
-        <h3 style="color: var(--pending); margin-top: 20px;">⚠️ ഫീസ്‌ തരാത്തവർ (Pending List)</h3>
+        <h3 style="color: var(--pending); margin-top: 25px;">⚠️ ഫീസ്‌ തരാത്തവർ (Pending List)</h3>
         <div class="table-container">
             <table>
                 <thead><tr><th>Student Name</th><th>Class</th><th>Status</th></tr></thead>
@@ -129,9 +119,8 @@
 </div>
 
 <script>
-    // താഴെ നിങ്ങളുടെ Apps Script URL പേസ്റ്റ് ചെയ്യുക
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyxiq2tYeCgC5rjkNA1s0wlugceQiX4FMZ-8XE2bYlheEE_4IVYiZgfO36gdWUWYmw4/exec';
-    let masterData = [];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyBCaisf-denpa8PjlC5EfRlNb9rjBVnBg8gMr7i0yUA5zV1MvBM_x49fKurWW_nQ/exec';
+    let rawData = [];
 
     function openPage(id, b) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -147,50 +136,43 @@
         document.getElementById('pendingBody').innerHTML = "<tr><td colspan='3' style='text-align:center;'>Loading...</td></tr>";
 
         fetch(`${scriptURL}?month=${m}`).then(r => r.json()).then(d => {
-            masterData = d.allData || d;
-            applyFilters(); // Apply class filter after data loads
+            rawData = d.allData || [];
+            applyFilters();
 
-            let pHTML = "";
+            let pendHTML = "";
             if(d.pending) {
                 d.pending.forEach(s => {
-                    pHTML += `<tr class="pending-row"><td>${s[0]}</td><td>${s[1]}</td><td>Pending ❌</td></tr>`;
+                    pendHTML += `<tr class="pending-row"><td>${s[0]}</td><td>${s[1]}</td><td>Pending ❌</td></tr>`;
                 });
             }
-            document.getElementById('pendingBody').innerHTML = pHTML || "<tr><td colspan='3' style='color:green;'>എല്ലാവരും നൽകി! ✅</td></tr>";
+            document.getElementById('pendingBody').innerHTML = pendHTML || "<tr><td colspan='3' style='color:green; text-align:center;'>എല്ലാവരും നൽകി! ✅</td></tr>";
         });
     }
 
     function applyFilters() {
-        let cVal = document.getElementById('classFilter').value;
-        let mVal = document.getElementById('monthFilter').value;
+        let cFilter = document.getElementById('classFilter').value;
+        let mFilter = document.getElementById('monthFilter').value;
         
-        let filtered = masterData.filter((r, idx) => {
+        let filteredRows = rawData.filter((r, idx) => {
             if(idx === 0) return false;
-            let classMatch = (cVal === "All" || r[2] == cVal);
-            let monthMatch = (r[5] === mVal);
-            return classMatch && monthMatch;
+            return (cFilter === "All" || r[2] == cFilter) && (r[5] === mFilter);
         });
 
-        renderPaidTable(filtered);
-    }
-
-    function renderPaidTable(rows) {
         let h = "";
-        rows.forEach((r) => {
-            // Finding original index for editing
-            let originalIndex = masterData.findIndex(row => row === r);
+        filteredRows.forEach(r => {
+            let originalIdx = rawData.findIndex(row => row === r);
             h += `<tr>
                 <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>
                 <td>${r[5]}</td><td>₹${r[4]}</td>
-                <td><span class="edit-link" onclick="startEdit(${originalIndex}, '${r[1]}', '${r[2]}', '${r[3]}', '${r[4]}', '${r[5]}')">Edit ✏️</span></td>
+                <td><span class="edit-link" onclick="startEdit(${originalIdx}, '${r[1]}', '${r[2]}', '${r[3]}', '${r[4]}', '${r[5]}')">Edit ✏️</span></td>
             </tr>`;
         });
         document.getElementById('paidBody').innerHTML = h || "<tr><td colspan='7' style='text-align:center;'>വിവരങ്ങൾ ലഭ്യമല്ല.</td></tr>";
     }
 
     function startEdit(idx, n, c, t, a, m) {
-        openPage('entryPage', document.getElementById('btn1'));
-        document.getElementById('formHeader').innerText = "തിരുത്തുക (EDITING) ✏️";
+        openPage('entryPage', document.getElementById('tBtn1'));
+        document.getElementById('formHeader').innerText = "തിരുത്തുക (EDIT RECORD) ✏️";
         document.getElementById('actionField').value = "edit";
         document.getElementById('rowField').value = idx;
         document.getElementById('nameInp').value = n;
@@ -205,7 +187,7 @@
     document.getElementById('feeForm').addEventListener('submit', e => {
         e.preventDefault();
         document.getElementById('saveBtn').disabled = true;
-        document.getElementById('msg').innerText = "ഷീറ്റിലേക്ക് മാറ്റങ്ങൾ വരുത്തുന്നു...";
+        document.getElementById('msg').innerText = "Processing... Please wait.";
         fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
             .then(() => {
                 alert("വിജയകരമായി പൂർത്തിയാക്കി!");
