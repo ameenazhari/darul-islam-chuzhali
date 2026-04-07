@@ -5,106 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darul Islam Chuzhali - Fee Portal</title>
     <style>
-        :root { --primary: #00695c; --bg: #f4f7f6; --pending: #d32f2f; }
+        :root { --primary: #00695c; --bg: #f0f4f3; --pending: #d32f2f; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        .tabs { display: flex; background: var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .tab-btn { flex: 1; padding: 15px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; }
+        
+        /* ഹെഡർ ഡിസൈൻ */
+        .main-header { background: white; text-align: center; padding: 25px 10px; border-bottom: 4px solid var(--primary); }
+        .madrasa-name { color: var(--primary); font-size: 28px; font-weight: 900; margin: 0; letter-spacing: 1px; }
+        .sub-text { color: #555; font-size: 14px; font-weight: bold; margin-top: 5px; text-transform: uppercase; }
+        .madrasa-img { width: 100%; max-width: 350px; height: auto; margin-top: 15px; border-radius: 12px; }
+
+        .tabs { display: flex; background: var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        .tab-btn { flex: 1; padding: 18px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; }
         .tab-btn.active { background: #004d40; border-bottom: 4px solid #ffeb3b; }
-        .container { max-width: 1000px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        .container { max-width: 1000px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.05); }
         .page { display: none; }
         .page.active { display: block; }
         
-        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-        label { font-weight: bold; margin-bottom: 5px; color: #444; }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
+        label { font-weight: bold; margin-bottom: 8px; color: #444; }
         input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; width: 100%; box-sizing: border-box; }
         
-        .submit-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .submit-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .submit-btn:hover { background: #004d40; }
         
-        .controls { display: flex; gap: 10px; background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-        .controls select { width: auto; min-width: 110px; }
+        .controls { display: flex; gap: 10px; background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+        .print-btn { background: #333; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        th, td { padding: 14px; border: 1px solid #eee; text-align: left; }
+        th { background: #f4f7f6; color: #333; font-weight: bold; }
+        .pending-row { color: var(--pending); font-weight: bold; background-color: #fff8f8 !important; }
         
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
-        th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
-        th { background: #f1f1f1; color: #333; }
-        .pending-row { color: var(--pending); font-weight: bold; }
-        
-        @media print { .tabs, .controls, .submit-btn { display: none !important; } .container { box-shadow: none; border: none; } }
+        @media print { 
+            .tabs, .controls, .submit-btn { display: none !important; } 
+            .container { box-shadow: none; border: none; width: 100%; margin: 0; padding: 0; }
+            .main-header { display: block !important; padding: 10px; border-bottom: 2px solid black; }
+            .madrasa-img { max-width: 150px; }
+            table { border: 1px solid black; }
+            th, td { border: 1px solid black; padding: 8px; }
+        }
     </style>
 </head>
 <body>
 
+<div class="main-header">
+    <h1 class="madrasa-name">DARUL ISLAM CHUZHALI</h1>
+    <p class="sub-text">FEE MANAGEMENT SYSTEM</p>
+    <img src="https://github.com/mrasheedi/my-images/raw/main/madrasa_students.png" alt="Students Photo" class="madrasa-img">
+</div>
+
 <div class="tabs">
-    <button class="tab-btn active" id="tBtn1" onclick="openPage('entryPage', this)">ഫീസ്‌ നൽകാൻ (Entry)</button>
-    <button class="tab-btn" id="tBtn2" onclick="openPage('recordPage', this)">ലിസ്റ്റ് നോക്കാൻ (Records)</button>
+    <button class="tab-btn active" onclick="openPage('entryPage', this)">Entry</button>
+    <button class="tab-btn" onclick="openPage('recordPage', this)">Records</button>
 </div>
 
 <div class="container">
     <div id="entryPage" class="page active">
-        <h2 style="text-align:center; color:var(--primary)">FEE ENTRY FORM</h2>
+        <h3 style="text-align:center; color:var(--primary); margin-top:0;">New Fee Entry</h3>
         <form id="feeForm">
-            <div class="form-group"><label>വിദ്യാർത്ഥിയുടെ പേര്</label><input type="text" name="name" required></div>
-            <div class="form-group">
-                <label>ക്ലാസ്</label>
-                <select name="class" required>
-                    <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>ഫീ ഇനം</label>
-                <select name="feeType">
-                    <option value="Madrasa Fee">Madrasa Fee</option>
-                    <option value="Bus Fee">Bus Fee</option>
-                    <option value="Exam Fee">Exam Fee</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>മാസം (Month)</label>
-                <select name="month" id="formMonth">
-                    <script>
-                        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-                        months.forEach(m => document.write(`<option value="${m}">${m}</option>`));
-                    </script>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>വർഷം (Year)</label>
-                <select name="year">
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
-                    <option value="2027">2027</option>
-                </select>
-            </div>
-            <div class="form-group"><label>തുക (Amount)</label><input type="number" name="amount" required></div>
-            <button type="submit" id="saveBtn" class="submit-btn">സേവ് ചെയ്യുക (SAVE)</button>
+            <div class="form-group"><label>വിദ്യാർത്ഥിയുടെ പേര്</label><input type="text" name="name" required placeholder="Student Name"></div>
+            <div class="form-group"><label>ക്ലാസ്</label><select name="class" required><script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script></select></div>
+            <div class="form-group"><label>ഫീ ഇനം</label><select name="feeType"><option value="Madrasa Fee">Madrasa Fee</option><option value="Bus Fee">Bus Fee</option><option value="Exam Fee">Exam Fee</option></select></div>
+            <div class="form-group"><label>മാസം</label><select name="month" id="mSelect"><script>const months = ["January","February","March","April","May","June","July","August","September","October","November","December"]; months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script></select></div>
+            <div class="form-group"><label>വർഷം</label><select name="year"><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option></select></div>
+            <div class="form-group"><label>തുക</label><input type="number" name="amount" required placeholder="0.00"></div>
+            <button type="submit" id="saveBtn" class="submit-btn">SAVE</button>
         </form>
-        <p id="msg" style="text-align:center; font-weight:bold; margin-top:10px;"></p>
+        <p id="msg" style="text-align:center; font-weight:bold; margin-top:15px; color: green;"></p>
     </div>
 
     <div id="recordPage" class="page">
-        <h2 style="text-align:center; color:var(--primary)">ഫീസ്‌ വിവരങ്ങൾ</h2>
+        <h3 style="text-align:center; color:var(--primary); margin-top:0;">Records</h3>
         <div class="controls">
-            <select id="yearFilter" onchange="loadData()"><option value="2026">2026</option><option value="2025">2025</option></select>
-            <select id="monthFilter" onchange="loadData()"><script>months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script></select>
-            <select id="classFilter" onchange="applyFilters()"><option value="All">All Classes</option><script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script></select>
-            <button onclick="window.print()" style="padding:10px; cursor:pointer; background:#333; color:white; border:none; border-radius:5px;">🖨️ Print</button>
+            <div style="display:flex; gap:10px;">
+                <select id="yearFilter" onchange="loadData()"><option value="2026">2026</option><option value="2025">2025</option></select>
+                <select id="monthFilter" onchange="loadData()"><script>months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script></select>
+                <select id="classFilter" onchange="applyFilters()"><option value="All">All Classes</option><script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script></select>
+            </div>
+            <button onclick="window.print()" class="print-btn">🖨️ Print</button>
         </div>
 
-        <h3>✅ ഫീസ്‌ തന്നവർ</h3>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Amount</th></tr></thead>
-                <tbody id="paidBody"></tbody>
-            </table>
-        </div>
+        <h4 style="color: green;">✅ പണമടച്ചവർ</h4>
+        <div style="overflow-x:auto;"><table><thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Type</th><th>Amount</th></tr></thead><tbody id="paidBody"></tbody></table></div>
 
-        <h3 style="color:var(--pending); margin-top:25px;">⚠️ ബാക്കിയുള്ളവർ (Pending)</h3>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Student Name</th><th>Class</th><th>Status</th></tr></thead>
-                <tbody id="pendingBody"></tbody>
-            </table>
-        </div>
+        <h4 style="color:var(--pending); margin-top:30px;">⚠️ ബാക്കിയുള്ളവർ</h4>
+        <div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Class</th><th>Status</th></tr></thead><tbody id="pendingBody"></tbody></table></div>
     </div>
 </div>
 
@@ -116,20 +102,16 @@
     function openPage(id, b) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        b.classList.add('active');
+        document.getElementById(id).classList.add('active'); b.classList.add('active');
         if(id === 'recordPage') loadData();
     }
 
     function loadData() {
         let m = document.getElementById('monthFilter').value;
         let y = document.getElementById('yearFilter').value;
-        document.getElementById('paidBody').innerHTML = "<tr><td colspan='4' align='center'>Loading...</td></tr>";
-        
+        document.getElementById('paidBody').innerHTML = "<tr><td colspan='5' align='center'>Loading...</td></tr>";
         fetch(`${scriptURL}?month=${m}&year=${y}`).then(r => r.json()).then(d => {
-            rawData = d.allData || [];
-            pendingData = d.pending || [];
-            applyFilters();
+            rawData = d.allData || []; pendingData = d.pending || []; applyFilters();
         });
     }
 
@@ -137,15 +119,13 @@
         let cf = document.getElementById('classFilter').value;
         let mf = document.getElementById('monthFilter').value;
         let yf = document.getElementById('yearFilter').value;
-        
         let pHTML = "";
         rawData.slice(1).forEach(r => {
-            // Column B: Name, C: Class, E: Amount, F: Month, G: Year
             if(r[5] == mf && r[6] == yf && (cf == "All" || r[2] == cf)) {
-                pHTML += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>Class ${r[2]}</td><td>₹${r[4]}</td></tr>`;
+                pHTML += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>Class ${r[2]}</td><td>${r[3]}</td><td>₹${r[4]}</td></tr>`;
             }
         });
-        document.getElementById('paidBody').innerHTML = pHTML || "<tr><td colspan='4' align='center'>വിവരങ്ങളില്ല.</td></tr>";
+        document.getElementById('paidBody').innerHTML = pHTML || "<tr><td colspan='5' align='center'>No records.</td></tr>";
 
         let pendHTML = "";
         pendingData.forEach(s => {
@@ -153,18 +133,16 @@
                 pendHTML += `<tr class="pending-row"><td>${s[0]}</td><td>Class ${s[1]}</td><td>Pending ❌</td></tr>`;
             }
         });
-        document.getElementById('pendingBody').innerHTML = pendHTML || "<tr><td colspan='3' align='center' style='color:green;'>എല്ലാവരും നൽകി! ✅</td></tr>";
+        document.getElementById('pendingBody').innerHTML = pendHTML || "<tr><td colspan='3' align='center' style='color:green;'>No pending! ✅</td></tr>";
     }
 
     document.getElementById('feeForm').addEventListener('submit', e => {
         e.preventDefault();
         document.getElementById('saveBtn').disabled = true;
-        document.getElementById('msg').innerText = "ഷീറ്റിലേക്ക് മാറ്റുന്നു...";
+        document.getElementById('msg').innerText = "സേവ് ചെയ്യുന്നു...";
         fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
-            .then(() => {
-                alert("സേവ് ചെയ്തു!");
-                window.location.reload();
-            });
+            .then(() => { alert("വിജയകരമായി സേവ് ചെയ്തു!"); window.location.reload(); })
+            .catch(() => { alert("Error!"); document.getElementById('saveBtn').disabled = false; });
     });
 
     window.onload = loadData;
