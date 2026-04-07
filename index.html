@@ -3,264 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darul Islam Madrasa Fee Portal</title>
+    <title>Darul Islam Madrasa - Fee Management</title>
     <style>
-        :root {
-            --primary-color: #00695c; /* Deep Green */
-            --secondary-color: #1a73e8; /* Blue */
-            --bg-color: #f0f4f8;
-        }
+        :root { --primary: #00695c; --secondary: #1a73e8; --bg: #f4f7f6; --pending: #d32f2f; --edit: #ff9800; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; }
+        
+        /* Tab Navigation */
+        .tabs { display: flex; background: var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .tab-btn { flex: 1; padding: 15px; color: white; cursor: pointer; border: none; background: none; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .tab-btn.active { background: #004d40; border-bottom: 4px solid #ffeb3b; }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            margin: 0; 
-            padding: 10px; 
-        }
-
-        .container { 
-            max-width: 900px; 
-            margin: 20px auto; 
-            background: #fff; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            border-top: 8px solid var(--primary-color);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 { 
-            color: var(--primary-color); 
-            margin: 0; 
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .header p { 
-            color: #666; 
-            margin: 5px 0; 
-            font-weight: bold;
-        }
+        .container { max-width: 1000px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .page { display: none; }
+        .page.active { display: block; }
 
         /* Form Design */
-        form { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
+        form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f9f9f9; padding: 25px; border-radius: 10px; border: 1px solid #eee; }
         .form-group { display: flex; flex-direction: column; }
-        
-        label { margin-bottom: 5px; font-weight: 600; color: #444; }
+        label { margin-bottom: 8px; font-weight: bold; color: #444; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+        .submit-btn { grid-column: span 2; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .submit-btn:hover { background: #004d40; }
+        .edit-mode-btn { background: var(--edit) !important; }
 
-        input, select { 
-            padding: 12px; 
-            border: 1.5px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 15px;
-            transition: 0.3s;
-        }
+        /* Table & Controls */
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; flex-wrap: wrap; gap: 10px; }
+        .print-btn { background: #333; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-        input:focus, select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 5px rgba(0,105,92,0.2);
-            outline: none;
-        }
+        .table-container { overflow-x: auto; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #eee; text-align: left; }
+        th { background: #f1f1f1; color: #333; }
+        .pending-row { color: var(--pending); font-weight: bold; }
+        .edit-link { color: var(--edit); cursor: pointer; font-weight: bold; border: 1px solid var(--edit); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
 
-        button { 
-            grid-column: span 2; 
-            padding: 15px; 
-            background-color: var(--primary-color); 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 18px; 
-            font-weight: bold; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        button:hover { background-color: #004d40; transform: translateY(-1px); }
-        button:active { transform: translateY(0); }
-
-        /* Table Design */
-        .table-section { margin-top: 40px; }
-        
-        .table-header {
-            background: var(--secondary-color);
-            color: white;
-            padding: 10px;
-            border-radius: 8px 8px 0 0;
-            text-align: center;
-        }
-
-        .table-container { overflow-x: auto; }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            background: white;
-        }
-
-        th, td { 
-            padding: 15px; 
-            border-bottom: 1px solid #eee; 
-            text-align: left; 
-        }
-
-        th { background-color: #f8f9fa; color: #333; font-weight: bold; }
-        
-        tr:hover { background-color: #f1f8f7; }
-
-        #message { text-align: center; font-weight: bold; margin: 15px 0; }
-
-        @media (max-width: 600px) {
-            form { grid-template-columns: 1fr; }
-            button { grid-column: span 1; }
-            .header h1 { font-size: 22px; }
+        /* Print Settings */
+        @media print {
+            .tabs, .controls, .submit-btn, form, .edit-link { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; margin: 0; }
+            .page { display: block !important; }
+            table { border: 1px solid #000; width: 100%; }
+            th, td { border: 1px solid #000 !important; }
         }
     </style>
 </head>
 <body>
 
+<div class="tabs">
+    <button class="tab-btn active" id="btn1" onclick="openPage('entryPage', this)">ഫീസ്‌ നൽകാൻ (Entry)</button>
+    <button class="tab-btn" id="btn2" onclick="openPage('recordPage', this)">ലിസ്റ്റ് നോക്കാൻ (Records)</button>
+</div>
+
 <div class="container">
-    <div class="header">
-        <h1>DARUL ISLAM MADRASA</h1>
-        <p>CHUZHALI - FEE MANAGEMENT PORTAL</p>
+    <div id="entryPage" class="page active">
+        <h2 style="text-align:center; color:var(--primary)" id="formHeader">FEE ENTRY FORM</h2>
+        <form id="feeForm">
+            <input type="hidden" name="action" id="actionField" value="add">
+            <input type="hidden" name="rowIndex" id="rowField">
+            
+            <div class="form-group"><label>വിദ്യാർത്ഥിയുടെ പേര്</label><input type="text" name="name" id="nameInp" required></div>
+            <div class="form-group">
+                <label>ക്ലാസ്</label>
+                <select name="class" id="classInp" required>
+                    <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}</option>`);</script>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ഫീ ഇനം</label>
+                <select name="feeType" id="typeInp" required>
+                    <option value="Madrasa Fee">Madrasa Fee</option>
+                    <option value="Bus Fee">Bus Fee</option>
+                    <option value="Exam Fee">Exam Fee</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>മാസം</label>
+                <select name="month" id="monthInp" required>
+                    <script>
+                        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                        months.forEach(m => document.write(`<option value="${m}">${m}</option>`));
+                    </script>
+                </select>
+            </div>
+            <div class="form-group"><label>തുക (Amount)</label><input type="number" name="amount" id="amountInp" required></div>
+            <button type="submit" class="submit-btn" id="saveBtn">സേവ് ചെയ്യുക (SAVE)</button>
+        </form>
+        <p id="msg" style="text-align:center; margin-top:15px; font-weight:bold;"></p>
     </div>
-    
-    <form id="feeForm">
-        <div class="form-group">
-            <label>വിദ്യാർത്ഥിയുടെ പേര്</label>
-            <input type="text" name="name" placeholder="Enter Name" required>
-        </div>
 
-        <div class="form-group">
-            <label>ക്ലാസ്</label>
-            <select name="class" required>
-                <option value="">Select Class</option>
-                <option value="1">Class 1</option>
-                <option value="2">Class 2</option>
-                <option value="3">Class 3</option>
-                <option value="4">Class 4</option>
-                <option value="5">Class 5</option>
-                <option value="6">Class 6</option>
-                <option value="7">Class 7</option>
-                <option value="8">Class 8</option>
-                <option value="9">Class 9</option>
-                <option value="10">Class 10</option>
-                <option value="11">Class 11 (+1)</option>
-                <option value="12">Class 12 (+2)</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>ഫീ ഇനം</label>
-            <select name="feeType" required>
-                <option value="">Select Fee Type</option>
-                <option value="Bus Fee">Bus Fee</option>
-                <option value="Exam Fee">Exam Fee</option>
-                <option value="Madrasa Fee">Madrasa Fee</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>തുക (Amount)</label>
-            <input type="number" name="amount" placeholder="₹ 0.00" required>
-        </div>
+    <div id="recordPage" class="page">
+        <h2 style="text-align:center; color:var(--primary)">FEE COLLECTION & PENDING LIST</h2>
         
-        <button type="submit" id="submitBtn">SUBMIT DATA</button>
-    </form>
-
-    <p id="message"></p>
-
-    <div class="table-section">
-        <div class="table-header">
-            <h3>RECORDED TRANSACTIONS</h3>
+        <div class="controls">
+            <div>
+                <label>ഫിൽറ്റർ (Class): </label>
+                <select id="classFilter" onchange="applyFilters()">
+                    <option value="All">All Classes</option>
+                    <script>for(let i=1; i<=12; i++) document.write(`<option value="${i}">Class ${i}</option>`);</script>
+                </select>
+                <label style="margin-left:10px;">മാസം: </label>
+                <select id="monthFilter" onchange="loadData()">
+                    <script>months.forEach(m => document.write(`<option value="${m}">${m}</option>`));</script>
+                </select>
+            </div>
+            <button class="print-btn" onclick="window.print()">🖨️ പ്രിന്റ് എടുക്കുക</button>
         </div>
+
+        <h3 style="color: green;">✅ ഫീസ്‌ തന്നവർ (Paid List)</h3>
         <div class="table-container">
-            <table id="feeTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Student Name</th>
-                        <th>Class</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr><td colspan="5" style="text-align:center;">Loading records...</td></tr>
-                </tbody>
+            <table>
+                <thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Type</th><th>Month</th><th>Amount</th><th>Edit</th></tr></thead>
+                <tbody id="paidBody"></tbody>
+            </table>
+        </div>
+
+        <h3 style="color: var(--pending); margin-top: 20px;">⚠️ ഫീസ്‌ തരാത്തവർ (Pending List)</h3>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Student Name</th><th>Class</th><th>Status</th></tr></thead>
+                <tbody id="pendingBody"></tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyxiq2tYeCgC5rjkNA1s0wlugceQiX4FMZ-8XE2bYlheEE_4IVYiZgfO36gdWUWYmw4/exec'; 
-    const form = document.getElementById('feeForm');
-    const msg = document.getElementById('message');
-    const tableBody = document.getElementById('tableBody');
+    // താഴെ നിങ്ങളുടെ Apps Script URL പേസ്റ്റ് ചെയ്യുക
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyxiq2tYeCgC5rjkNA1s0wlugceQiX4FMZ-8XE2bYlheEE_4IVYiZgfO36gdWUWYmw4/exec';
+    let masterData = [];
 
-    function loadTableData() {
-        fetch(scriptURL)
-            .then(res => res.json())
-            .then(data => {
-                tableBody.innerHTML = ""; 
-                if (data.length <= 1) {
-                    tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>No records found</td></tr>";
-                    return;
-                }
-                for (let i = 1; i < data.length; i++) {
-                    let row = `<tr>
-                        <td>${data[i][0]}</td>
-                        <td>${data[i][1]}</td>
-                        <td>${data[i][2]}</td>
-                        <td>${data[i][3]}</td>
-                        <td>₹ ${data[i][4]}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
-                }
-            })
-            .catch(err => {
-                tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Error loading data!</td></tr>";
-            });
+    function openPage(id, b) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        b.classList.add('active');
+        if(id === 'recordPage') loadData();
     }
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        msg.style.color = "#1a73e8";
-        msg.innerHTML = "Processing...";
+    function loadData() {
+        let m = document.getElementById('monthFilter').value;
+        document.getElementById('paidBody').innerHTML = "<tr><td colspan='7' style='text-align:center;'>Loading...</td></tr>";
+        document.getElementById('pendingBody').innerHTML = "<tr><td colspan='3' style='text-align:center;'>Loading...</td></tr>";
 
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                msg.innerHTML = "Success! Data saved to sheet.";
-                msg.style.color = "green";
-                form.reset();
-                btn.disabled = false;
-                loadTableData();
-            })
-            .catch(error => {
-                msg.innerHTML = "Error! Please try again.";
-                msg.style.color = "red";
-                btn.disabled = false;
+        fetch(`${scriptURL}?month=${m}`).then(r => r.json()).then(d => {
+            masterData = d.allData || d;
+            applyFilters(); // Apply class filter after data loads
+
+            let pHTML = "";
+            if(d.pending) {
+                d.pending.forEach(s => {
+                    pHTML += `<tr class="pending-row"><td>${s[0]}</td><td>${s[1]}</td><td>Pending ❌</td></tr>`;
+                });
+            }
+            document.getElementById('pendingBody').innerHTML = pHTML || "<tr><td colspan='3' style='color:green;'>എല്ലാവരും നൽകി! ✅</td></tr>";
+        });
+    }
+
+    function applyFilters() {
+        let cVal = document.getElementById('classFilter').value;
+        let mVal = document.getElementById('monthFilter').value;
+        
+        let filtered = masterData.filter((r, idx) => {
+            if(idx === 0) return false;
+            let classMatch = (cVal === "All" || r[2] == cVal);
+            let monthMatch = (r[5] === mVal);
+            return classMatch && monthMatch;
+        });
+
+        renderPaidTable(filtered);
+    }
+
+    function renderPaidTable(rows) {
+        let h = "";
+        rows.forEach((r) => {
+            // Finding original index for editing
+            let originalIndex = masterData.findIndex(row => row === r);
+            h += `<tr>
+                <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>
+                <td>${r[5]}</td><td>₹${r[4]}</td>
+                <td><span class="edit-link" onclick="startEdit(${originalIndex}, '${r[1]}', '${r[2]}', '${r[3]}', '${r[4]}', '${r[5]}')">Edit ✏️</span></td>
+            </tr>`;
+        });
+        document.getElementById('paidBody').innerHTML = h || "<tr><td colspan='7' style='text-align:center;'>വിവരങ്ങൾ ലഭ്യമല്ല.</td></tr>";
+    }
+
+    function startEdit(idx, n, c, t, a, m) {
+        openPage('entryPage', document.getElementById('btn1'));
+        document.getElementById('formHeader').innerText = "തിരുത്തുക (EDITING) ✏️";
+        document.getElementById('actionField').value = "edit";
+        document.getElementById('rowField').value = idx;
+        document.getElementById('nameInp').value = n;
+        document.getElementById('classInp').value = c;
+        document.getElementById('typeInp').value = t;
+        document.getElementById('amountInp').value = a;
+        document.getElementById('monthInp').value = m;
+        document.getElementById('saveBtn').innerText = "UPDATE NOW";
+        document.getElementById('saveBtn').classList.add('edit-mode-btn');
+    }
+
+    document.getElementById('feeForm').addEventListener('submit', e => {
+        e.preventDefault();
+        document.getElementById('saveBtn').disabled = true;
+        document.getElementById('msg').innerText = "ഷീറ്റിലേക്ക് മാറ്റങ്ങൾ വരുത്തുന്നു...";
+        fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
+            .then(() => {
+                alert("വിജയകരമായി പൂർത്തിയാക്കി!");
+                window.location.reload();
             });
     });
 
-    window.onload = loadTableData;
+    window.onload = loadData;
 </script>
-
 </body>
 </html>
